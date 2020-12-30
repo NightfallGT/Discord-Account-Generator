@@ -11,9 +11,6 @@ A script that automates creating discord accounts.
 ![Picture](https://i.ibb.co/yPpLGJD/Screenshot-15.png)
 
 
-Download from here: 
-https://chromedriver.chromium.org/downloads
-
 
 
 ## How to use
