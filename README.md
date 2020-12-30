@@ -23,9 +23,9 @@ https://chromedriver.chromium.org/downloads
 
 ### Run via Exe Version
 
-
+- Extract the .rar file
 - Run the exe file 
-
+- Do not take out the program out of the folder
 ### Run via Python
 - install the required modules
 ```
