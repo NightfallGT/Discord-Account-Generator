@@ -93,7 +93,12 @@ class GmailScrape:
     def _get(self):
         self.driver.get('https://www.gmailnator.com/bulk-emails')
         print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Webdriver wait.')
-        WebDriverWait(self.driver, 2).until(EC.element_to_be_clickable((By.XPATH,'/html/body/section/div[1]/div/div[2]/div/div[2]/div/form/div[1]/label' ))).click()       
+
+        try:
+            self.driver.find_element_by_xpath('/html/body/section/div[1]/div/div[2]/div/div[2]/div/form/div[1]/label').click()     
+        except:
+            pass
+
         self.driver.find_element_by_xpath('//*[@id="generate_button"]').click()
 
     def _scrape(self, source):
