@@ -86,7 +86,7 @@ class GmailScrape:
         options = webdriver.ChromeOptions()
         options.add_experimental_option("excludeSwitches", ["enable-logging"])
         self.driver = webdriver.Chrome(options=options, executable_path=r"chromedriver.exe")
-        self.driver.minimize_window()
+        #self.driver.minimize_window()
         self._get()
         self.emails = self._scrape(self.driver.page_source)
 
@@ -94,12 +94,10 @@ class GmailScrape:
         self.driver.get('https://www.gmailnator.com/bulk-emails')
         print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Webdriver wait.')
 
-        try:
-            self.driver.find_element_by_xpath('/html/body/section/div[1]/div/div[2]/div/div[2]/div/form/div[1]/label').click()     
-        except:
-            pass
 
+        WebDriverWait(self.driver, 2).until(EC.element_to_be_clickable((By.XPATH,'/html/body/section/div[1]/div/div[2]/div/div[2]/div/form/div[1]/label' ))).click()       
         self.driver.find_element_by_xpath('//*[@id="generate_button"]').click()
+
 
     def _scrape(self, source):
         print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Scraping..')
