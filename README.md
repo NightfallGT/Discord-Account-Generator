@@ -29,6 +29,7 @@ A script that automates creating discord accounts.
 pip install selenium
 pip install colorama
 pip install bs4
+pip install lxml
 ```
 
 - to run the script..
