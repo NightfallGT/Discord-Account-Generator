@@ -1,5 +1,5 @@
 # Discord-Account-Generator
-Mass create discord accounts
+Automate creating discord accounts
 
 
 ## About
