@@ -10,19 +10,20 @@ A script that automates creating discord accounts.
 ## Picture
 ![Picture](https://i.ibb.co/yPpLGJD/Screenshot-15.png)
 
-
-
+### Get Python
+If you dont have python installed, download python 3.7.6
+and make sure you click on the 'ADD TO PATH' option during
+the installation.
 
 ## How to use
-
 
 - You can customize usernames by editing the usernames in discord_usernames.txt.
 
 ### Run via Exe Version
-
 - Extract the .rar file
 - Run the exe file 
 - Do not take out the program out of the folder
+
 ### Run via Python
 - install the required modules
 ```
