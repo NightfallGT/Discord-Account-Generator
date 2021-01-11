@@ -45,3 +45,7 @@ ONLY IF IT NOT WORKING
 - Download the latest version chromedriver.exe: https://chromedriver.chromium.org/downloads
 
 Then replace the chromedriver.exe file in the folder.
+
+Where can i found my generated accounts?
+It is located in the output folder. Open up login.txt to see what has been generated.
+
