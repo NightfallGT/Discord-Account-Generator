@@ -47,5 +47,7 @@ ONLY IF IT NOT WORKING
 Then replace the chromedriver.exe file in the folder.
 
 Where can i found my generated accounts?
-It is located in the output folder. Open up login.txt to see what has been generated.
+
+It is located in the output folder. Open up login.txt to see the accounts 
+that has been generated.
 
