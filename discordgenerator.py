@@ -46,29 +46,44 @@ class DiscordGen:
         self.driver.find_element_by_xpath("//input[@type='password']").send_keys(self.password)
 
         print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL}" +' Random Date')
-        self.driver.find_element_by_xpath('//*[@id="app-mount"]/div[2]/div/div[2]/div/form/div/div[2]/div[4]/div[1]/div[1]/div/div/div/div/div[2]/div').click()
 
-        actions = ActionChains(self.driver)
+        dateWorking = False
 
-        actions.send_keys(str(random.randint(1,12)))# Month
-        actions.send_keys(Keys.ENTER)
-        actions.send_keys(str(random.randint(1,28))) #Day
-        actions.send_keys(Keys.ENTER)
+        #sometimes different discord languages have different xpath locations
 
-        random_year = [1989,1990,1991,1992,1993,1994,1995,1996,1997,1998,1999,2000]
-
-        actions.send_keys(str(random.choice(random_year))) #Year
-        actions.perform()
-        #Submit form
-        try: 
-            self.driver.find_element_by_class_name('inputDefault-3JxKJ2').click() # Agree to terms and conditions
+        try: #if date could not be found via divs
+            self.driver.find_element_by_xpath('//*[@id="app-mount"]/div[2]/div/div[2]/div/form/div/div[2]/div[4]/div[1]/div[1]/div/div/div/div/div[2]/div').click()
+            dateWorking = True
+        # except Exception: #find text in span
+        #     self.driver.find_element_by_xpath("//span[contains(text(),'Month')]").click()
+        #     dateWorking = True                                  
         except:
-            print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Could not find button. Ignoring..")
-            pass
+            print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} " + 'Error in typing date. Please type the date manually.')
+            input(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Submit your form manually. Have you solved captcha? [y/n] > ")
+            dateWorking = False
 
-        print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Submit form')
-        input(f'{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Press ENTER to create account.')
-        self.driver.find_element_by_class_name('button-3k0cO7').click() # Submit button        
+        if dateWorking:
+            actions = ActionChains(self.driver)
+
+            actions.send_keys(str(random.randint(1,12)))# Month
+            actions.send_keys(Keys.ENTER)
+            actions.send_keys(str(random.randint(1,28))) #Day
+            actions.send_keys(Keys.ENTER)
+
+            random_year = [1989,1990,1991,1992,1993,1994,1995,1996,1997,1998,1999,2000]
+
+            actions.send_keys(str(random.choice(random_year))) #Year
+            actions.perform()
+            #Submit form
+            try: 
+                self.driver.find_element_by_class_name('inputDefault-3JxKJ2').click() # Agree to terms and conditions
+            except:
+                print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Could not find button. Ignoring..")
+                pass
+
+            print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Submit form')
+            input(f'{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Press ENTER to create account.')
+            self.driver.find_element_by_class_name('button-3k0cO7').click() # Submit button        
 
         while True:
             checker = input(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Have you solved the captcha and submit? [y/n] > ")
