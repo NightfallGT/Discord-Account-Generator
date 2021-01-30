@@ -22,6 +22,7 @@ the installation.
 ## How to use
 
 - You can customize usernames by editing the usernames in discord_usernames.txt.
+- Run the file and use normal mode if you are a beginner/inexperienced with proxies and theading.
 
 ### Run via Exe Version
 - Extract the .rar file
@@ -48,7 +49,6 @@ If you want to use proxies, simply paste the proxies in config/proxies.txt. HTTP
 - Uses multiple chrome windows
 - Only run this when you have proxies or else one of you Chrome windows will get rate limited.
 - Do put more than 6 threads unless you think your PC can handle it. I recommend using 2-3 threads.
-
 
 #### No Threading
 - This only uses one chrome window. 
