@@ -42,7 +42,7 @@ pip install lxml
 python discordgenerator.py
 ```
 #### Proxy support
-If you want to use proxies, simply paste the proxies in config/proxies.txt. HTTP proxies are only supported as of now.
+If you want to use proxies, simply paste the proxies in config/proxies.txt.  If you want to stop using proxies, just remove all the proxies from the .txt file. The script automatically checks for proxies on startup. HTTP proxies are only supported as of now.
 
 #### Threading mode 
 - Uses multiple chrome windows
