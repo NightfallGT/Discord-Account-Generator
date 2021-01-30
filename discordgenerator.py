@@ -205,8 +205,6 @@ def worker(proxy=None):
 
     g = GmailnatorGet()
     new_email = g.get_email()
-
-    #new_email = 'jackq.ueli.neba.ne.t.m.p@gmail.com'
     
     free_print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Scraped {new_email}")
  
