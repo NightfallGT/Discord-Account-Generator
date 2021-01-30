@@ -2,10 +2,15 @@
 Automate creating discord accounts
 
 
+
 ## About
 
 A script that automates creating discord accounts.
 
+## NEW VERSION RELEASED
+- Added threading
+- Added proxy support
+- Auto-verify email 
 
 ## Picture
 ![Picture](https://i.ibb.co/yPpLGJD/Screenshot-15.png)
@@ -37,6 +42,17 @@ pip install lxml
 ```
 python discordgenerator.py
 ```
+
+If you want to use proxies, simply paste the proxies in config/proxies.txt. HTTP proxies are only supported as of now.
+
+#### Threading mode 
+- Uses multiple chrome windows
+- Only run this when you have proxies or else one of you Chrome windows will get rate limited.
+- Do put more than 6 threads unless you think your PC can handle it. I recommend using 2-3 threads.
+
+
+#### No Threading
+- This only uses one chrome window. 
 
 
 ### TROUBLESHOOT
