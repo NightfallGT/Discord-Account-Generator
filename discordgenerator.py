@@ -5,47 +5,85 @@ import random
 import string
 import sys
 import threading
-from colorama import Fore, Style, init
+import datetime
+import re
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC  
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
+from colorama import Fore, Style, init 
+from bs4 import BeautifulSoup as soup
+from sys import stdout
+from src import UI
+from src import GmailnatorRead, GmailnatorGet, dfilter_email, pfilter_email, find_email_type
 
 init(convert=True)
 
+lock = threading.Lock()
+
+def password_gen(length=8, chars= string.ascii_letters + string.digits + string.punctuation):
+        return ''.join(random.choice(chars) for _ in range(length))  
+
+# def minute_timer():
+#     while True:
+#         elapsed = time.strftime('%H:%M:%S', time.gmtime(time.time() - start))
+#         os.system(f'title Discord Generator ^| Rate Limit Timer ^| Time Elapsed {elapsed}')
+#         time.sleep(0.05)
+#         if elapsed == '00:01:00':
+#             print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Timer finished.")
+#             break
+
+def gather_proxy():
+        proxies = []
+        with open('config/proxies.txt', 'r', encoding='UTF-8') as file:
+            lines = file.readlines()
+            for line in lines:
+                proxies.append(line.replace('\n', ''))
+        return proxies
+
+def free_print(arg):
+    lock.acquire()
+    stdout.flush()
+    print(arg)
+    lock.release()   
+
 class DiscordGen:
-    def __init__(self, email, username, password):
+    def __init__(self, email, username, password, proxy=None):
         options = webdriver.ChromeOptions()
         options.add_experimental_option("excludeSwitches", ["enable-logging"])
+
+        if proxy:
+            options.add_argument('--proxy-server=%s' % proxy)
+
         self.driver = webdriver.Chrome(options=options, executable_path=r"chromedriver.exe")
 
         self.email= email
         self.username = username
         self.password = password
 
-        self.register()
 
     def register(self):
         self.driver.get('https://discord.com/register')
 
-        print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Webdriver wait")
+        free_print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Webdriver wait")
         WebDriverWait(self.driver, 1).until(EC.presence_of_element_located((By.XPATH, "//input[@type='email']")))
 
-        print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} " +self.email)                          
+        free_print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} " +self.email)                          
         self.driver.find_element_by_xpath("//input[@type='email']").send_keys(self.email)
 
-        print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} " +self.username)
+        free_print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} " +self.username)
         self.driver.find_element_by_xpath("//input[@type='text']").send_keys(self.username)
 
-        print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} " +self.password)
+        free_print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} " +self.password)
         self.driver.find_element_by_xpath("//input[@type='password']").send_keys(self.password)
 
-        print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL}" +' Random Date')
+        free_print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL}" +' Random Date')
 
         dateWorking = False
 
@@ -54,11 +92,9 @@ class DiscordGen:
         try: #if date could not be found via divs
             self.driver.find_element_by_xpath('//*[@id="app-mount"]/div[2]/div/div[2]/div/form/div/div[2]/div[4]/div[1]/div[1]/div/div/div/div/div[2]/div').click()
             dateWorking = True
-        # except Exception: #find text in span
-        #     self.driver.find_element_by_xpath("//span[contains(text(),'Month')]").click()
-        #     dateWorking = True                                  
+                              
         except:
-            print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} " + 'Error in typing date. Please type the date manually.')
+            free_print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} " + 'Error in typing date. Please type the date manually.')
             input(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Submit your form manually. Have you solved captcha? [y/n] > ")
             dateWorking = False
 
@@ -74,156 +110,251 @@ class DiscordGen:
 
             actions.send_keys(str(random.choice(random_year))) #Year
             actions.perform()
+
             #Submit form
             try: 
                 self.driver.find_element_by_class_name('inputDefault-3JxKJ2').click() # Agree to terms and conditions
             except:
-                print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Could not find button. Ignoring..")
+                free_print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Could not find button. Ignoring..")
                 pass
 
-            print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Submit form')
-            input(f'{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Press ENTER to create account.')
+            #input(f'{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Press ENTER to create account.')
             self.driver.find_element_by_class_name('button-3k0cO7').click() # Submit button        
+            free_print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Submit form')
 
         while True:
+            lock.acquire()
             checker = input(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Have you solved the captcha and submit? [y/n] > ")
+            lock.release()
             if checker == "y":
                 break
                 return True
             elif checker =="n":
                 sys.exit()
+
+        
         return False
 
+    def verify_account(self,link):
+        self.driver.get(link)
+        free_print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Task complete")
+
     def close_driver(self):
         self.driver.close()
-class GmailScrape:
-    def __init__(self):
-        options = webdriver.ChromeOptions()
-        options.add_experimental_option("excludeSwitches", ["enable-logging"])
-        self.driver = webdriver.Chrome(options=options, executable_path=r"chromedriver.exe")
-        self.driver.minimize_window()
-        self._get()
-        self.emails = self._scrape(self.driver.page_source)
 
-    def _get(self):
-        self.driver.get('https://www.gmailnator.com/bulk-emails')
-        print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Webdriver wait.')
+def start_verify(email, email_type):  #email, 'dot'/'plus'
+    free_print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Checking email inbox.')
+    raw_email = email
+
+    if email_type == 'dot':
+        email = dfilter_email(raw_email)
 
 
-        WebDriverWait(self.driver, 2).until(EC.element_to_be_clickable((By.XPATH,'/html/body/section/div[1]/div/div[2]/div/div[2]/div/form/div[1]/label' ))).click()       
+    if email_type == 'plus':
+        email = pfilter_email(raw_email)
+
+    g = GmailnatorRead(email, raw_email, email_type)
+
+    retry_count = 1
+
+    while retry_count <= 6:
+        gmailnator_inbox = g.get_inbox()
+        if gmailnator_inbox != '':
+            break
+
+        free_print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Inbox empty. Retry count: {retry_count}')
+        free_print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Sleeping for 15 seconds. Waiting for Discord email.')
+        time.sleep(15)
+                    
+        retry_count += 1
+
+    discord_keywords = re.findall('Discord', gmailnator_inbox)
+
+    if 'Discord' in discord_keywords:
+        #retrive messages from inbox
+        bs = soup(gmailnator_inbox, 'html.parser')
+        href_links = [a['href'] for a in bs.find_all('a')]
+
+        first_message = href_links[0] #get first message which is most likely from Discord verify.
+
+        remove = re.compile('(^.*?(?=[#])[#])') #only get id; remove unnecessary stuff
+        first_id = remove.sub('', first_message)
         
-        #self.driver.find_element_by_xpath('//*[@id="generate_button"]').click()
-        self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 2).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="generate_button"]'))))
+        message_html = g.get_single_message(first_id)
+        content_html = soup(message_html, 'html.parser')
 
-    def _scrape(self, source):
-        print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Scraping..')
-        soup = BeautifulSoup(source,'lxml')
-        emails = []
-        anchor_tags = soup.find_all('a')
+        message_links = [a['href'] for a in content_html.find_all('a')]
 
-        for x in anchor_tags:
-            emails.append(x.string)
-        emails = emails[14:-10]
+        try:
+            discord_verify = message_links[1]
+            free_print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Extracted discord link.')
+        except IndexError:
+            free_print(f'{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} List index out of range.')
+            discord_verify = None
 
-        return emails
+        return discord_verify
 
-    def get_list(self):
-        return self.emails
+    else:
+        free_print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Discord keyword not found. Unable to verify account via email.')
+    return False
 
-    def close_driver(self):
-        self.driver.close()
+def worker(proxy=None):
+    if proxy:
+        free_print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Proxy used {proxy} ")
+    free_print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Scraping email. ")
 
+    g = GmailnatorGet()
+    new_email = g.get_email()
+
+    #new_email = 'jackq.ueli.neba.ne.t.m.p@gmail.com'
+    
+    free_print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Scraped {new_email}")
+ 
+    email_type = find_email_type(new_email)
+
+    if email_type =='dot':
+        filtered_email = dfilter_email(new_email)
+
+    if email_type == 'plus':
+        filtered_email = pfilter_email(new_email)
+
+    discord_usernames = []
+    with open('config/discord_usernames.txt', 'r', encoding='UTF-8') as username_txt:
+        lines = username_txt.readlines()
+        for line in lines:
+            discord_usernames.append(line.replace('\n', ''))
+
+    username = random.choice(discord_usernames)
+    password = password_gen()
+
+    lock.acquire()
+    with open('output/login.txt', 'a', encoding='UTF-8') as login_file:
+        login_file.write(new_email + ':' + password +'\n')      
+    lock.release()
+
+    if not proxy:
+        d = DiscordGen(new_email, username, password)
+
+    if proxy:
+        d = DiscordGen(new_email, username, password, proxy = proxy)
+
+    try:
+        d.register()
+        lock.acquire()
+        input(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Hit enter to continue after getting the Discord token.")
+
+        lock.release()
+        try:
+            verify_link = start_verify(new_email, email_type)
+            if verify_link:
+                d.verify_account(verify_link)
+                os.system('pause>nul')
+                d.close_driver()
+
+            else:
+                d.verify_account('https://www.gmailnator.com/inbox/#' + new_email)
+                os.system('pause>nul')
+
+        except Exception as e:
+            print('some error occured')
+            print(e)
+            d.verify_account('https://www.gmailnator.com/inbox/#' + new_email)
+            os.system('pause>nul')
+            d.close_driver()   
+                     
+    except WebDriverException:
+        free_print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Webdriver Error. Unable to continue.")
+
+    free_print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Worker task ended.")
+    
 def menu():
-    os.system('cls')
-    os.system('title Discord Generator ^| coded by Nightfall#2512')
-    logo =f'''{Fore.LIGHTMAGENTA_EX} 
-                            ·▄▄▄▄  ▪  .▄▄ ·  ▄▄·       ▄▄▄  ·▄▄▄▄       ▄▄ • ▄▄▄ . ▐ ▄ 
-                            ██▪ ██ ██ ▐█ ▀. ▐█ ▌▪▪     ▀▄ █·██▪ ██     ▐█ ▀ ▪▀▄.▀·•█▌▐█
-                            ▐█· ▐█▌▐█·▄▀▀▀█▄██ ▄▄ ▄█▀▄ ▐▀▀▄ ▐█· ▐█▌    ▄█ ▀█▄▐▀▀▪▄▐█▐▐▌
-                            ██. ██ ▐█▌▐█▄▪▐█▐███▌▐█▌.▐▌▐█•█▌██. ██     ▐█▄▪▐█▐█▄▄▌██▐█▌
-                            ▀▀▀▀▀• ▀▀▀ ▀▀▀▀ ·▀▀▀  ▀█▄▀▪.▀  ▀▀▀▀▀▀•     ·▀▀▀▀  ▀▀▀ ▀▀ █▪  
-                                                                  by Nightfall#2512
-    '''
-    menu =f'''
-                                            ╔══════════════════════════════╗
-                                                     [1] Start
-                                                     [2] Exit 
-                                            ╚══════════════════════════════╝    {Style.RESET_ALL}
-    '''
+    proxies = gather_proxy()
 
-    print(logo)
-    print(menu)
+    os.system('cls')
+
+    if len(proxies) != 0:
+        os.system('title Discord Generator ^| coded by Nightfall#2512 ^| PROXY LIST DETECTED')
+
+    else:
+        os.system('title Discord Generator ^| coded by Nightfall#2512 ')
+    UI.banner()
+    UI.start_menu()
+
     try:
         user_input = int(input(f"\t\t{Fore.LIGHTMAGENTA_EX}[?]{Style.RESET_ALL} > "))
         print('\n\n')
-    except:
+    except ValueError:
         user_input = 0
-    return user_input
 
-def password_gen(length=8, chars= string.ascii_letters + string.digits + string.punctuation):
-        return ''.join(random.choice(chars) for _ in range(length))  
+    if user_input == 1:
+        os.system('cls')
+        UI.banner()
+        UI.menu2()
 
-def verify_account(email):
-    options = webdriver.ChromeOptions()
-    options.add_experimental_option("excludeSwitches", ["enable-logging"])
-    driver = webdriver.Chrome(options=options, executable_path=r"chromedriver.exe")
-    url = "https://www.gmailnator.com/inbox#" + email
-    driver.get(url)
-    while True:
-        answer = input(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Have you verified your account? [y/n] > ")
-        if answer == 'y':
-            driver.close()
-            break
-    return True
+        try:
+            user_input = int(input(f"\t\t{Fore.LIGHTMAGENTA_EX}[?]{Style.RESET_ALL} > "))
+            print('\n\n')
+        except ValueError:
+            user_input = 0
 
+        if user_input == 1:
+            return 1
 
-def minute_timer():
-    while True:
-        elapsed = time.strftime('%H:%M:%S', time.gmtime(time.time() - start))
-        os.system(f'title Discord Generator ^| Rate Limit Timer ^| Time Elapsed {elapsed}')
-        time.sleep(0.05)
-        if elapsed == '00:01:00':
-            print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Timer finished.")
-            break
+        elif user_input == 2:
+            return 2
 
+        else:
+            return None
 
 if __name__ == '__main__':
-    if menu() == 1:
-        #Email Method
-        print(f"{Fore.LIGHTMAGENTA_EX}[MESSAGE]{Style.RESET_ALL} Please do not close or touch the chrome tab. ")
-        print(f"{Fore.LIGHTMAGENTA_EX}[MESSAGE]{Style.RESET_ALL} Login details are saved in output/login.txt")
+    continue_program = True
 
-        g = GmailScrape()
-        email_list = g.get_list()
-        g.close_driver()
+    m = menu()
 
-        discord_usernames = []
-        with open('config/discord_usernames.txt', 'r', encoding='UTF-8') as username_txt:
-            lines = username_txt.readlines()
-            for line in lines:
-                discord_usernames.append(line.replace('\n', ''))
- 
-        account_num = 0
-        for email in email_list:
-            #New instance; create new discord account.
-            os.system(f'title Discord Generator ^| Accounts Generated: {account_num}')
-            password = password_gen()
-            username = random.choice(discord_usernames)
-            with open('output/login.txt', 'a', encoding='UTF-8') as login_file:
-                login_file.write(email + ':' + password +'\n')            
-            d = DiscordGen(email, username, password)
+    if m == 1:
+        user_thread= True
+    elif m == 2:
+        user_thread = False
+    else:
+        continue_program = False
 
-            d.close_driver()
-            #Make user verify
-            verify_account(email)
+    if continue_program:
+        if user_thread:
+            print(f"{Fore.LIGHTMAGENTA_EX}[WARNING]{Style.RESET_ALL} Do not put a lot of threads or you will crash. 2 threads is decent. (chrome windows)")
+            num_thread = int(input(f"{Fore.LIGHTMAGENTA_EX}[>]{Style.RESET_ALL} Enter number of threads [eg. 3] > "))
+        
+        proxies = gather_proxy()
 
-            account_num += 1
-            os.system(f'title Discord Generator ^| Accounts Generated: {account_num}')
+        os.system('cls')
+        UI.banner()
+        print('\n\n')
 
-            print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Please wait 1 minute to avoid being rate limited by Discord.")
-            start = time.time()
-            minute_timer()
+        if user_thread:
 
-            os.system('title Discord Generator ^| coded by Nightfall#2512')
+            threads = []
+
+            if len(proxies) != 0:
+                os.system('title Discord Generator ^| Proxy: True ^| Threading: True')
+
+                for i in range(num_thread):
+                    t = threading.Thread(target=worker, args= (random.choice(proxies), ))
+                    threads.append(t)
+                    t.start()
+            else:
+                os.system('title Discord Generator ^| Proxy: False ^| Threading: True')
+
+                for i in range(num_thread):
+                    t = threading.Thread(target=worker)
+                    threads.append(t)
+                    t.start()
+        else:
+            if len(proxies) != 0:
+                os.system('title Discord Generator ^| Proxy: True ^| Threading: False')
+                worker(random.choice(proxies))
+
+            else:
+                os.system('title Discord Generator ^| Proxy: False ^| Threading: False')
+                worker()    
+
 
             
