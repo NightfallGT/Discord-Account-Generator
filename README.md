@@ -3,7 +3,7 @@ Automate creating discord accounts
 
 ## NEW VERSION RELEASED
 - Added threading
-- Added proxy support
+- Added proxy support [HTTP] (username and password proxies not supported yet)
 - Auto-verify email 
 
 ## About
