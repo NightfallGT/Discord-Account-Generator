@@ -239,7 +239,7 @@ def worker(proxy=None):
     try:
         d.register()
         lock.acquire()
-        input(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Hit enter to continue after getting the Discord token.")
+        input(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Hit enter once your done getting your token.")
 
         lock.release()
         try:
@@ -296,10 +296,10 @@ def menu():
             user_input = 0
 
         if user_input == 1:
-            return 1
+            return 2
 
         elif user_input == 2:
-            return 2
+            return 1
 
         else:
             return None

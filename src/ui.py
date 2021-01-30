@@ -29,8 +29,8 @@ class UI:
     def menu2(cls):
         menu =f'''{Fore.LIGHTMAGENTA_EX} 
                                          ╔══════════════════════════════╗
-                                                 [1] Threading
-                                                 [2] No Threading
+                                                 [1] Normal
+                                                 [2] Threading 
                                          ╚══════════════════════════════╝    {Style.RESET_ALL}
         '''
         print(menu) 
