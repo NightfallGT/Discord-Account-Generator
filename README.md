@@ -2,10 +2,15 @@
 Automate creating discord accounts
 
 
+
 ## About
 
 A script that automates creating discord accounts.
 
+## NEW VERSION RELEASED
+- Added threading
+- Added proxy support
+- Auto-verify email (no need to check your email)
 
 ## Picture
 ![Picture](https://i.ibb.co/yPpLGJD/Screenshot-15.png)
