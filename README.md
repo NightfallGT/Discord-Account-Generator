@@ -1,14 +1,14 @@
 # Discord-Account-Generator
-Automate creating discord accounts
+Proof of concept of how Discord accounts can be created without the need to type/ click buttons on a browser.
 
-## NEW VERSION RELEASED
+## NEW VERSION 
 - Added threading
 - Added proxy support [HTTP] (username and password proxies not supported yet)
 - Auto-verify email 
 
 ## About
 
-A script that automates creating discord accounts.
+A script that automates creating discord accounts. It shows how accounts can be created automatically without the user typing unless there is a captcha. This is used for educational purposes only
 
 ## How to use
 
