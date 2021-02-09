@@ -35,6 +35,7 @@ pip install selenium
 pip install colorama
 pip install bs4
 pip install lxml
+pip install requests
 ```
 
 - to run the script..
