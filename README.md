@@ -1,7 +1,7 @@
 # Discord-Account-Generator
 Proof of concept of how Discord accounts can be created without the need to type/ click buttons on a browser.
 
-## NEW VERSION 
+### NEW VERSION 
 1. Added threading
 2. Added proxy support [HTTP] (username and password proxies not supported yet)
 3. Auto-verify email 
