@@ -2,19 +2,15 @@
 Proof of concept of how Discord accounts can be created without the need to type/ click buttons on a browser.
 
 ### NEW VERSION 
-1. Added threading
-2. Added proxy support [HTTP] (username and password proxies not supported yet)
-3. Auto-verify email 
+- Added captcha bypass, (made chromedriver undetected)
 
 ## About
-
 A script that automates creating discord accounts. It shows how accounts can be created automatically without the user typing unless there is a captcha. This is used for educational purposes only
 
 ## Preview
 ![Picture](https://i.ibb.co/yPpLGJD/Screenshot-15.png)
 
 ## Usage
-
 1. You can customize usernames by editing the usernames in discord_usernames.txt.
 2. Run the file and use normal mode if you are a beginner/inexperienced with proxies and theading.
 
@@ -27,6 +23,7 @@ the installation.
 1. install the required modules
 ```
 pip install selenium
+pip install undetected-chromedriver
 pip install colorama
 pip install bs4
 pip install lxml
