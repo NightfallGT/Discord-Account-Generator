@@ -23,9 +23,9 @@ the installation.
 1. install the required modules
 ```
 pip install -r requirements.txt
-
+```
 or 
-
+```
 pip install selenium
 pip install undetected-chromedriver
 pip install colorama
