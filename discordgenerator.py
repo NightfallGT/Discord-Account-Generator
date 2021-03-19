@@ -274,10 +274,10 @@ def menu():
     os.system('cls')
 
     if len(proxies) != 0:
-        os.system('title Discord Generator ^| coded by Nightfall#2512 ^| PROXY LIST DETECTED')
+        os.system('title Discord Generator ^| coded by NightfallGT ^| PROXY LIST DETECTED')
 
     else:
-        os.system('title Discord Generator ^| coded by Nightfall#2512 ')
+        os.system('title Discord Generator ^| coded by NightfallGT ')
     UI.banner()
     UI.start_menu()
 
@@ -306,8 +306,8 @@ def menu():
 
         else:
             return None
-
-if __name__ == '__main__':
+            
+def main():
     continue_program = True
 
     m = menu()
@@ -357,5 +357,5 @@ if __name__ == '__main__':
                 os.system('title Discord Generator ^| Proxy: False ^| Threading: False')
                 worker()    
 
-
-            
+if __name__ == '__main__':
+    main()
