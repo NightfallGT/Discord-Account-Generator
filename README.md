@@ -54,13 +54,13 @@ python discordgenerator.py
 - This only uses one chrome window. 
 
 #### FAQ
+IF Chrome crashes..
 1. Make sure your chromedriver.exe file is the same version as your Chrome web browser version
 2. Download the latest version chromedriver.exe: https://chromedriver.chromium.org/downloads
+3. Then replace the chromedriver.exe file in the folder.
 
-Then replace the chromedriver.exe file in the folder.
+Where can i found my generated accounts?
 
-1. Where can i found my generated accounts?
-
-It is located in the output folder. Open up login.txt to see the accounts 
+1. It is located in the output folder. Open up login.txt to see the accounts 
 that has been generated.
 
