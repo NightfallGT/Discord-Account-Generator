@@ -1,18 +1,25 @@
 # Discord-Account-Generator
-Proof of concept of how Discord accounts can be created without the need to type/ click buttons on a browser.
-
-### NEW VERSION 
-- Added captcha bypass, (made chromedriver undetected)
+Proof of concept of how the creation of Discord accounts can be automated without the need to type/click buttons on browser.
 
 ## About
-A script that automates creating discord accounts. It shows how accounts can be created automatically without the user typing unless there is a captcha. This is used for educational purposes only
+A script that automates creating discord accounts. It shows how accounts can be created automatically without the user typing unless there is a captcha (h-Captcha just needs to be clicked) . It automatically verifies your Discord account via email for you and automatically saves login info in `login.txt` in `email:password:token` format. This is used for educational purposes only.
+
+## Features
+- Auto scrape email
+- Random username from list
+- Random password
+- Random date
+- Auto-email-verify
+- Automatically get Discord token and other login info
+- Proxy support
+- Multi-threading
 
 ## Preview
-![Picture](https://i.ibb.co/yPpLGJD/Screenshot-15.png)
+![Picture](https://i.ibb.co/SvsPwrD/Screenshot-525.png)
 
 ## Usage
 1. You can customize usernames by editing the usernames in discord_usernames.txt.
-2. Run the file and use normal mode if you are a beginner/inexperienced with proxies and theading.
+2. Run the file and use normal mode if you are a inexperienced with proxies and theading.
 
 ### Get Python
 If you dont have python installed, download python 3.7.6
@@ -35,14 +42,8 @@ pip install requests
 python discordgenerator.py
 ```
 
-### Run via Exe Version
-1. Extract the .rar file
-2. Run the exe file 
-3. Do not take out the program out of the folder
-
-
 #### Proxy support
-If you want to use proxies, simply paste the proxies in config/proxies.txt.  If you want to stop using proxies, just remove all the proxies from the .txt file. The script automatically checks for proxies on startup. HTTP proxies are only supported as of now.
+- If you want to use proxies, simply paste the proxies in config/proxies.txt.  If you want to stop using proxies, just remove all the proxies from the .txt file. The script automatically checks for proxies on startup. HTTP proxies are only supported as of now. If the proxies are not alive, the script will throw a WebDriver error.
 
 #### Threading mode 
 - Uses multiple chrome windows
@@ -52,15 +53,13 @@ If you want to use proxies, simply paste the proxies in config/proxies.txt.  If 
 #### No Threading
 - This only uses one chrome window. 
 
-
-#### TROUBLESHOOT
-ONLY IF IT IS NOT WORKING
+#### FAQ
 1. Make sure your chromedriver.exe file is the same version as your Chrome web browser version
 2. Download the latest version chromedriver.exe: https://chromedriver.chromium.org/downloads
 
 Then replace the chromedriver.exe file in the folder.
 
-Where can i found my generated accounts?
+1. Where can i found my generated accounts?
 
 It is located in the output folder. Open up login.txt to see the accounts 
 that has been generated.
