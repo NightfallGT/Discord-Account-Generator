@@ -37,7 +37,6 @@ class GmailnatorRead(Gmailnator):
         super().__init__()
 
         self.type = types
-
         self.email = email
         self.raw_email = raw_email
 
@@ -63,11 +62,13 @@ class GmailnatorRead(Gmailnator):
 
     def get_inbox(self):
         json_inbox = self.__requests_mailbox().json()
-
+        inbox_content = []
         try:
-            inbox_content = json_inbox[0]['content']
+            for email in range(len(json_inbox)):
+                inbox_content.append(str(json_inbox[email]['content']))
 
         except Exception as e:
+            print(e)
             inbox_content = ''
 
         return inbox_content
