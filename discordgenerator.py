@@ -130,12 +130,12 @@ class DiscordGen:
             checker = input(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Have you solved the captcha and submit? [y/n] > ")
             lock.release()
             if checker == "y":
+                self.token = self.driver.execute_script("let popup; popup = window.open('', '', `width=1,height=1`); if(!popup || !popup.document || !popup.document.write) console.log('Please allow popups'); window.dispatchEvent(new Event('beforeunload')); token = popup.localStorage.token.slice(1, -1); popup.close(); return token")
                 break
                 return True
             elif checker =="n":
                 sys.exit()
 
-        
         return False
 
     def verify_account(self,link):
@@ -162,44 +162,40 @@ def start_verify(email, email_type):  #email, 'dot'/'plus'
 
     while retry_count <= 6:
         gmailnator_inbox = g.get_inbox()
-        if gmailnator_inbox != '':
-            break
+        for x in range(len(gmailnator_inbox)):  # for each email
+            discord_keywords = re.findall('Discord', gmailnator_inbox)
 
+            if 'Discord' in discord_keywords:
+                #retrive messages from inbox
+                bs = soup(gmailnator_inbox[x], 'html.parser')
+                href_links = [a['href'] for a in bs.find_all('a')]
+
+                first_message = href_links[0] #get first message which is most likely from Discord verify.
+
+                remove = re.compile('(^.*?(?=[#])[#])') #only get id; remove unnecessary stuff
+                first_id = remove.sub('', first_message)
+                
+                message_html = g.get_single_message(first_id)
+                content_html = soup(message_html, 'html.parser')
+
+                message_links = [a['href'] for a in content_html.find_all('a')]
+
+                try:
+                    discord_verify = message_links[1]
+                    free_print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Extracted discord link.')
+                except IndexError:
+                    free_print(f'{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} List index out of range.')
+                    discord_verify = None
+
+                return discord_verify
+
+            else:
+                free_print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Discord keyword not found in that email. Trying an other one...')
         free_print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Inbox empty. Retry count: {retry_count}')
         free_print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Sleeping for 15 seconds. Waiting for Discord email.')
         time.sleep(15)
-                    
-        retry_count += 1
-
-    discord_keywords = re.findall('Discord', gmailnator_inbox)
-
-    if 'Discord' in discord_keywords:
-        #retrive messages from inbox
-        bs = soup(gmailnator_inbox, 'html.parser')
-        href_links = [a['href'] for a in bs.find_all('a')]
-
-        first_message = href_links[0] #get first message which is most likely from Discord verify.
-
-        remove = re.compile('(^.*?(?=[#])[#])') #only get id; remove unnecessary stuff
-        first_id = remove.sub('', first_message)
-        
-        message_html = g.get_single_message(first_id)
-        content_html = soup(message_html, 'html.parser')
-
-        message_links = [a['href'] for a in content_html.find_all('a')]
-
-        try:
-            discord_verify = message_links[1]
-            free_print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Extracted discord link.')
-        except IndexError:
-            free_print(f'{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} List index out of range.')
-            discord_verify = None
-
-        return discord_verify
-
-    else:
-        free_print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Discord keyword not found. Unable to verify account via email.')
-    return False
+    free_print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Discord keyword not found. Unable to verify account via email.')
+    return False  # cant find any email with the word discord in it
 
 def worker(proxy=None):
     if proxy:
@@ -228,11 +224,6 @@ def worker(proxy=None):
     username = random.choice(discord_usernames)
     password = password_gen()
 
-    lock.acquire()
-    with open('output/login.txt', 'a', encoding='UTF-8') as login_file:
-        login_file.write(new_email + ':' + password +'\n')      
-    lock.release()
-
     if not proxy:
         d = DiscordGen(new_email, username, password)
 
@@ -241,9 +232,10 @@ def worker(proxy=None):
 
     try:
         d.register()
+        token = str(d.token)
         lock.acquire()
-        input(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Hit enter once your done getting your token.")
-
+        with open('output/login.txt', 'a', encoding='UTF-8') as login_file:
+            login_file.write(new_email + ':' + password + ':' + token + '\n')      
         lock.release()
         try:
             verify_link = start_verify(new_email, email_type)
