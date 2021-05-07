@@ -163,7 +163,7 @@ def start_verify(email, email_type):  #email, 'dot'/'plus'
     while retry_count <= 6:
         gmailnator_inbox = g.get_inbox()
         for x in range(len(gmailnator_inbox)):  # for each email
-            discord_keywords = re.findall('Discord', gmailnator_inbox)
+            discord_keywords = re.findall('Discord', gmailnator_inbox[x])
 
             if 'Discord' in discord_keywords:
                 #retrive messages from inbox
