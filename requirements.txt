@@ -1,0 +1,6 @@
+selenium
+undetected-chromedriver
+colorama
+bs4
+lxml
+requests
