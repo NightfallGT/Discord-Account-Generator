@@ -11,7 +11,7 @@ Make sure your chromedriver.exe file is the same version as your current Chrome 
 paste chrome://settings/help in chrome.
 
 ## Account Disable Bypass (bypass phone number)
-Reason: **Temporary email detected when joining a server**
+Reason: **Temporary email / bot activity detected when joining a server**
 
 There is a 99% chance that your account will get disabled when you try joining a server.
 This happens because Discord detects suspicious activity when a temporary email is used. 
