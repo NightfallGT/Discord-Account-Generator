@@ -16,7 +16,7 @@ Reason: **Temporary email detected when joining a server**
 There is a 99% chance that your account will get disabled when you try joining a server.
 This happens because Discord detects suspicious activity when a temporary email is used. 
 
-To bypass this, you should not join any server using a temporary email. 
+To bypass this, you should not join any server using a temporary email to make the account look authentic as possible.
 
 After running Discord Account Generator and verifying your email, go to your Discord account settings and temporarily change the generated account's email to a legitimate one. (a real gmail account will do; temporary only) After doing so, join any server of your choice. (Remember that you cannot join any server using a temporary email or else it will get disabled). After that change back to the temporary email before, and to re-verify again, go to `https://www.gmailnator.com/#` `+` `the email that was used previously` . For example, to access the temp email, you do `https://www.gmailnator.com/#ran.do.me.mail@gmail.com`. 
 
