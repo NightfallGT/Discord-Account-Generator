@@ -13,7 +13,7 @@ paste chrome://settings/help in chrome.
 ## Account Disable Bypass (bypass phone number)
 Reason: **Temporary email / bot activity detected when joining a server**
 
-There is a 99% chance that your account will get disabled when you try joining a server.
+There is a 70% chance that your account will get disabled when you try joining a server.
 This happens because Discord detects suspicious activity when the temporary email is used. 
 
 To bypass this, you should not join any server using the temporary email 
