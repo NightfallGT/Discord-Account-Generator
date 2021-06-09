@@ -4,6 +4,12 @@ Proof of concept of how the creation of Discord accounts can be automated withou
 ## About
 A script that automates creating discord accounts. It shows how accounts can be created automatically without the user typing unless there is a captcha (h-Captcha just needs to be clicked) . It automatically verifies your Discord account via email for you and automatically saves login info in `login.txt` in `email:password:token` format. This is used for educational purposes only.
 
+## Chromedriver Fix
+If Chrome doesn't open/crashes, try getting the latest version of chromedriver.exe here > https://chromedriver.chromium.org/downloads. Replace the current chromedriver.exe in the folder with the latest version you have downloaded
+
+Make sure your chromedriver.exe file is the same version as your current Chrome web browser version. To check your current Chrome version,
+paste chrome://settings/help in chrome.
+
 ## Features
 - Auto scrape email
 - Random username from list
@@ -54,11 +60,6 @@ python discordgenerator.py
 - This only uses one chrome window. 
 
 #### FAQ
-IF Chrome crashes..
-1. Make sure your chromedriver.exe file is the same version as your Chrome web browser version
-2. Download the latest version chromedriver.exe: https://chromedriver.chromium.org/downloads
-3. Then replace the chromedriver.exe file in the folder.
-
 Where can i found my generated accounts?
 
 1. It is located in the output folder. Open up login.txt to see the accounts 
