@@ -93,13 +93,42 @@ class DiscordGen:
         #sometimes different discord languages have different xpath locations
 
         try: #if date could not be found via divs
-            self.driver.find_element_by_xpath('//*[@id="app-mount"]/div[2]/div/div[2]/div/form/div/div[2]/div[4]/div[1]/div[1]/div/div/div/div/div[2]/div').click()
-            dateWorking = True
+            actions = ActionChains(self.driver)
+            time.sleep(.5)
+            
+            # Locating to the first date input then the discord will navigate the focuse to the next input
+            self.driver.find_elements_by_class_name('css-1hwfws3')[0].click() 
+            
+            actions.send_keys(str(random.randint(1,12))) # Submitting the month
+
+            actions.send_keys(Keys.ENTER)
+
+
+            actions.send_keys(str(random.randint(1,28))) # Submitting the day
+
+
+            actions.send_keys(Keys.ENTER)
+
+
+            actions.send_keys(str(random.randint(1990,2001))) # Submitting the year
+
+            actions.send_keys(Keys.ENTER)
+
+            actions.send_keys(Keys.TAB) # Navigating to continue button
+
+            actions.send_keys(Keys.ENTER) # Creates the account
+
+
+            actions.perform() # All the actions are pending and needs to perform all at once 
+
+
                               
         except:
-            free_print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} " + 'Error in typing date. Please type the date manually.')
-            input(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Submit your form manually. Have you solved captcha? [y/n] > ")
-            dateWorking = False
+            free_print(f"\n{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} " + 'Error in typing date. Please type the date manually.')
+            input(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Submit your form manually. Have you put the date? [y/n] > ") # Fixed typo
+
+        free_print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Submit form')
+
 
         if dateWorking:
             actions = ActionChains(self.driver)
