@@ -13,16 +13,6 @@ If Chrome doesn't open/crashes, try getting the latest version of chromedriver.e
 Make sure your chromedriver.exe file is the same version as your current Chrome web browser version. To check your current Chrome version,
 paste chrome://settings/help in chrome.
 
-## Account Disable Bypass (bypass phone number)
-Reason: **Temporary email / bot activity detected when joining a server**
-
-There is a 70% chance that your account will get disabled when you try joining a server.
-This happens because Discord detects suspicious activity when the temporary email is used. 
-
-To bypass this, you should not join any server using the temporary email 
-
-After running Discord Account Generator and verifying your email, go to your Discord account settings and temporarily change the generated account's email to a legitimate one. (a real gmail account will do; temporary only) After doing so, join any server of your choice. (Remember that you cannot join any server using the temporary email or else it will get disabled). After that change back to the temporary email before, and to re-verify again, go to `https://www.gmailnator.com/inbox/#` `+` `the email that was used previously` . For example, to access the temp email, you do `https://www.gmailnator.com/inbox/#ran.do.me.mail@gmail.com`. 
-
 ## Features
 - Auto scrape email
 - Random username from list
