@@ -43,11 +43,32 @@ def password_gen(length=8, chars= string.ascii_letters + string.digits + string.
 #             break
 
 def gather_proxy():
+        http_sources = [
+            'https://api.proxyscrape.com/v2/?request=getproxies&protocol=http&timeout=10000&country=all&ssl=all&anonymity=elite&simplified=true',
+            'https://www.proxy-list.download/api/v1/get?type=http&anon=elite',
+            'https://free-proxy-list.net/',
+            'https://www.us-proxy.org/',
+            'https://free-proxy-list.net/uk-proxy.html',
+            'https://www.sslproxies.org/',
+            'https://free-proxy-list.net/anonymous-proxy.html',
+            'https://premiumproxy.net/anonymous-proxy-list'
+            ]
+        https_sources = [
+            'https://api.proxyscrape.com/v2/?request=getproxies&protocol=https&timeout=10000&country=all&ssl=all&anonymity=elite&simplified=true',
+            'https://www.proxy-list.download/api/v1/get?type=https&anon=elite'
+            ]
+        http_sources = http_sources + https_sources
         proxies = []
-        with open('config/proxies.txt', 'r', encoding='UTF-8') as file:
-            lines = file.readlines()
-            for line in lines:
-                proxies.append(line.replace('\n', ''))
+        
+        for url in http_sources:
+            url = url.strip()
+            res = requests.get(str(url))
+            html = res.text
+            regex = '(?:[\d]{1,3})\.(?:[\d]{1,3})\.(?:[\d]{1,3})\.(?:[\d]{1,3})\:(?:[\d]{2,5})'
+            found = re.findall(regex, html)
+            proxies = proxies + found
+        proxies = list(set(proxies))
+
         return proxies
 
 def free_print(arg):
