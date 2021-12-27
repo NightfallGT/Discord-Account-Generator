@@ -25,6 +25,12 @@ from bs4 import BeautifulSoup as soup
 from sys import stdout
 from src import UI
 from src import GmailnatorRead, GmailnatorGet, dfilter_email, pfilter_email, find_email_type
+from colorama import init, Fore, Style
+
+try:
+    os.system('taskkill -f -im chrome.exe')
+except:
+    pass
 
 init(convert=True)
 
@@ -56,15 +62,62 @@ def free_print(arg):
     print(arg)
     lock.release()   
 
+"""Colorama module constants."""
+init(convert=True)  # Init colorama module.
+red = Fore.RED  # Red color.
+green = Fore.GREEN  # Green color.
+yellow = Fore.YELLOW  # Yellow color.
+reset = Style.RESET_ALL  # Reset color attribute.
+
+
 class DiscordGen:
     def __init__(self, email, username, password, proxy=None):
+
+        def element_clickable(self, element: str) -> None:
+            """Click on element if it's clickable using Selenium."""
+            WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable(
+                (By.XPATH, element))).click()
+
+        def element_visible(self, element: str):
+            """Check if element is visible using Selenium."""
+            return WebDriverWait(self.driver, 20).until(EC.visibility_of_element_located(
+                (By.XPATH, element)))
+        
+        self.webdriver_path = 'chromedriver.exe'
+        self.extension_path = 'Tampermonkey.crx'
         options = webdriver.ChromeOptions()
+        options.add_extension(self.extension_path)  # Add extension.
+        options.add_argument('--lang=en')  # Set webdriver language to English.
+        # options.add_argument("headless")  # Headless ChromeDriver.
+        options.add_argument('log-level=3')  # No logs is printed.
+        options.add_argument('--mute-audio')  # Audio is muted.
+        options.add_argument("--enable-webgl-draft-extensions")
+        options.add_argument("--ignore-gpu-blocklist")
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
         options.add_experimental_option("excludeSwitches", ["enable-logging"])
 
-        if proxy:
-            options.add_argument('--proxy-server=%s' % proxy)
-
         self.driver = webdriver.Chrome(options=options, executable_path=r"chromedriver.exe")
+
+        try:
+            print('Installing the hCaptcha solver userscript.', end=' ')
+            time.sleep(3)
+            self.driver.switch_to.window(self.driver.window_handles[1])  # Wait that Tampermonkey tab loads.
+            self.driver.get('https://greasyfork.org/en/scripts/425854-hcaptcha'
+                            '-solver-automatically-solves-hcaptcha-in-browser')
+            # Click on "Install" Greasy Fork button.
+            WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="install-area"]/a[1]'))).click()
+            # Click on "Install" Tampermonkey button.
+            time.sleep(2)
+            self.driver.switch_to.window(self.driver.window_handles[2])  # Switch on Tampermonkey install tab.
+            WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@value="Install"]'))).click()
+            time.sleep(3)
+            self.driver.switch_to.window(self.driver.window_handles[1])  # Switch to Greasy Fork tab.
+            self.driver.close()  # Close this tab.
+            self.driver.switch_to.window(self.driver.window_handles[0])  # Switch to main tab.
+            print(f'{green}Installed.{reset}')
+        except TimeoutException:
+            sys.exit(f'{red}Failed.{reset}')
 
         self.email= email
         self.username = username
@@ -72,19 +125,20 @@ class DiscordGen:
 
 
     def register(self):
+
         self.driver.get('https://discord.com/register')
 
         free_print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Webdriver wait")
         WebDriverWait(self.driver, 1).until(EC.presence_of_element_located((By.XPATH, "//input[@type='email']")))
 
         free_print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} " +self.email)                          
-        self.driver.find_element_by_xpath("//input[@type='email']").send_keys(self.email)
+        self.driver.find_element(By.XPATH, "//input[@type='email']").send_keys(self.email)
 
         free_print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} " +self.username)
-        self.driver.find_element_by_xpath("//input[@type='text']").send_keys(self.username)
+        self.driver.find_element(By.XPATH, "//input[@type='text']").send_keys(self.username)
 
         free_print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} " +self.password)
-        self.driver.find_element_by_xpath("//input[@type='password']").send_keys(self.password)
+        self.driver.find_element(By.XPATH, "//input[@type='password']").send_keys(self.password)
 
         free_print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL}" +' Random Date')
 
@@ -97,7 +151,7 @@ class DiscordGen:
             time.sleep(.5)
             
             # Locating to the first date input then the discord will navigate the focuse to the next input
-            self.driver.find_elements_by_class_name('css-1hwfws3')[0].click() 
+            self.driver.find_elements(By.CLASS_NAME, 'css-1hwfws3')[0].click() 
             
             actions.send_keys(str(random.randint(1,12))) # Submitting the month
 
@@ -125,7 +179,8 @@ class DiscordGen:
                               
         except:
             free_print(f"\n{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} " + 'Error in typing date. Please type the date manually.')
-            input(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Submit your form manually. Have you put the date? [y/n] > ") # Fixed typo
+            input(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Submiting captcha ") # Fixed typo
+            time.sleep(60)
 
         free_print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Submit form')
 
@@ -145,18 +200,19 @@ class DiscordGen:
 
             #Submit form
             try: 
-                self.driver.find_element_by_class_name('inputDefault-3JxKJ2').click() # Agree to terms and conditions
+                self.driver.find_element(By.CLASS_NAME, 'inputDefault-3JxKJ2').click() # Agree to terms and conditions
             except:
                 free_print(f"{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Could not find button. Ignoring..")
                 pass
 
             #input(f'{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Press ENTER to create account.')
-            self.driver.find_element_by_class_name('button-3k0cO7').click() # Submit button        
+            self.driver.find_element(By.CLASS_NAME, 'button-3k0cO7').click() # Submit button        
             free_print(f'{Fore.LIGHTMAGENTA_EX}[*]{Style.RESET_ALL} Submit form')
 
         while True:
             lock.acquire()
-            checker = input(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Have you solved the captcha and submit? [y/n] > ")
+            checker = print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Captcha is long to solve > ")
+            time.sleep(120)
             lock.release()
             if checker == "y":
                 self.token = self.driver.execute_script("let popup; popup = window.open('', '', `width=1,height=1`); if(!popup || !popup.document || !popup.document.write) console.log('Please allow popups'); window.dispatchEvent(new Event('beforeunload')); token = popup.localStorage.token.slice(1, -1); popup.close(); return token")
@@ -169,7 +225,9 @@ class DiscordGen:
 
     def verify_account(self,link):
         self.driver.get(link)
-        free_print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} Task complete")
+
+        print(f"{Fore.LIGHTMAGENTA_EX}[!]{Style.RESET_ALL} And one more account!")
+        time.sleep(120)
 
     def close_driver(self):
         self.driver.close()
@@ -351,32 +409,33 @@ def main():
         UI.banner()
         print('\n\n')
 
-        if user_thread:
+        while True:
+            if user_thread:
 
-            threads = []
+                threads = []
 
-            if len(proxies) != 0:
-                os.system('title Discord Generator ^| Proxy: True ^| Threading: True')
+                if len(proxies) != 0:
+                    os.system('title Discord Generator ^| Proxy: True ^| Threading: True')
 
-                for i in range(num_thread):
-                    t = threading.Thread(target=worker, args= (random.choice(proxies), ))
-                    threads.append(t)
-                    t.start()
+                    for i in range(num_thread):
+                        t = threading.Thread(target=worker, args= (random.choice(proxies), ))
+                        threads.append(t)
+                        t.start()
+                else:
+                    os.system('title Discord Generator ^| Proxy: False ^| Threading: True')
+
+                    for i in range(num_thread):
+                        t = threading.Thread(target=worker)
+                        threads.append(t)
+                        t.start()
             else:
-                os.system('title Discord Generator ^| Proxy: False ^| Threading: True')
+                if len(proxies) != 0:
+                    os.system('title Discord Generator ^| Proxy: True ^| Threading: False')
+                    worker(random.choice(proxies))
 
-                for i in range(num_thread):
-                    t = threading.Thread(target=worker)
-                    threads.append(t)
-                    t.start()
-        else:
-            if len(proxies) != 0:
-                os.system('title Discord Generator ^| Proxy: True ^| Threading: False')
-                worker(random.choice(proxies))
-
-            else:
-                os.system('title Discord Generator ^| Proxy: False ^| Threading: False')
-                worker()    
-
+                else:
+                    os.system('title Discord Generator ^| Proxy: False ^| Threading: False')
+                    worker()    
+            time.slee(240)
 if __name__ == '__main__':
     main()
